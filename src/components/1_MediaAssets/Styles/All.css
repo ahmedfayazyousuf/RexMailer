@@ -1,0 +1,41 @@
+html, body{
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;  
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link{
+    margin: 0px 15px 0px 15px;
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+/* FONT  */
+@font-face{
+    font-family: myFont;
+    src:url('./Fonts/Garet-Book.otf');
+  }
+  *{
+    font-family: myFont;
+  }
+  
+  @font-face{
+    font-family: myFontBold;
+    src:url('./Fonts/Mont-HeavyDEMO.otf');
+  } 
+  h1, .fontSpecial{
+    font-family: myFontBold;
+  }   
+
+  /* TEXT HIGHLIGHT  */
+::selection {
+    background: #d49400;
+    color: #000;
+  }
+ 
+/* SCROLL BAR  */
+    ::-webkit-scrollbar {
+    display: none;
+}
