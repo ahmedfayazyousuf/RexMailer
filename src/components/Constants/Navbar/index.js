@@ -37,41 +37,41 @@ const NavbarMain = () => {
         <input type="checkbox" id="check" checked={isChecked} onChange={handleCheckboxChange} />
 
         <NavLink className="nav-link" style={{ margin: '5px 0px 0px 15px', zIndex: '2'}} to="/">
-          <img src={LogoWhite} alt='LogoWhite' style={{ width: '150px', height: '30px', marginLeft: '5px', marginRight: '-20px' }}></img>
+          <img src={LogoWhite} alt='LogoWhite' style={{ width: '150px', height: '30px', marginLeft: '5px', marginRight: '-20px', filter: 'brightness(-1000%)' }}></img>
         </NavLink>
 
         <label htmlFor="check" className="checkbtn">
-          <img src={Burger} alt='Burger' className='Burger' style={{ width: '27px', height: '22px', filter: 'brightness(1000%)' }}></img>
+          <img src={Burger} alt='Burger' className='Burger' style={{ width: '27px', height: '22px', filter: 'brightness(-1000%)' }}></img>
         </label>
 
         <ul style={{ zIndex: '1' }}>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/">
               Home 
             </NavLink> 
           </li>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/About">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/About">
               About
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/UpcomingCourses">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/UpcomingCourses">
               Upcoming courses
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/Faculty">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/Faculty">
               Faculty
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/Resources">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/Resources">
               Resources
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" style={({ isActive }) => ({ color: isActive ? '#8FF2CC' : 'white' })} onClick={closeNavvy} to="/Contact">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/Contact">
               Contact
             </NavLink>
           </li>

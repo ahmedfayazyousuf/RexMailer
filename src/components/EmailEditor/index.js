@@ -69,8 +69,8 @@ const EmailEditor = () => {
   };
 
   return (
-    <div style={{ padding: '50px', backgroundColor: '#f4f4f4', minHeight: '100vh' }}>
-      <h2>Email Editor</h2>
+    <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px'}}>
+      <h2 style={{margin: '0', padding: '0', marginBottom: '15px'}}>Email Editor</h2>
       <form onSubmit={handleSubmit}>
         <div id="editor" style={{ height: '300px', marginBottom: '30px', border: '1px solid black' }}></div>
         <input

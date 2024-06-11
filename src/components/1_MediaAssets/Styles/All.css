@@ -5,12 +5,6 @@ html, body{
     margin: 0;
     padding: 0;
   }
-  .nav-link{
-    margin: 0px 15px 0px 15px;
-    color: black;
-    font-weight: 600;
-    text-decoration: none;
-  }
   
 /* FONT  */
 @font-face{
@@ -31,7 +25,7 @@ html, body{
 
   /* TEXT HIGHLIGHT  */
 ::selection {
-    background: #d49400;
+    background: #46fa8b;
     color: #000;
   }
  
