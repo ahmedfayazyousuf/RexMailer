@@ -44,35 +44,25 @@ const NavbarMain = () => {
           <img src={Burger} alt='Burger' className='Burger' style={{ width: '27px', height: '22px', filter: 'brightness(-1000%)' }}></img>
         </label>
 
-        <ul style={{ zIndex: '1' }}>
+        <ul>
           <li>
             <NavLink className="nav-link" onClick={closeNavvy} to="/">
-              Home 
+              Home
             </NavLink> 
           </li>
           <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/About">
-              About
+            <NavLink className="nav-link" onClick={closeNavvy} to="/CreateTemplate">
+              Create template
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/UpcomingCourses">
-              Upcoming courses
+            <NavLink className="nav-link" onClick={closeNavvy} to="/SendEmails">
+              Send emails
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/Faculty">
-              Faculty
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/Resources">
-              Resources
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/Contact">
-              Contact
+            <NavLink className="nav-link" onClick={closeNavvy} to="/Contacts">
+              Contacts
             </NavLink>
           </li>
         </ul>

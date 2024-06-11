@@ -33,3 +33,16 @@ html, body{
     ::-webkit-scrollbar {
     display: none;
 }
+
+button {
+  background-color: #46fa8b;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #66fc9f;
+}
