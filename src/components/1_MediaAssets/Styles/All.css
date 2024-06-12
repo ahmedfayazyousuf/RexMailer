@@ -90,6 +90,12 @@ button:hover {
   background-attachment: fixed;
 }
 
+input{
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid grey;
+  font-size: 12px;
+}
 
 @media screen and (max-width: 1000px) { 
   .DPhider {

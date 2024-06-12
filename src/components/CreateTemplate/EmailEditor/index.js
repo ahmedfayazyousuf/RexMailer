@@ -8,6 +8,7 @@ import { storage } from '../../../Firebase';
 const EmailEditor = () => {
   const [editorContent, setEditorContent] = useState('');
   const [attachments, setAttachments] = useState([]);
+  const [templateTitle, setTemplateTitle] = useState('');
   const quillRef = useRef(null);
   const db = getFirestore();
 
@@ -77,8 +78,21 @@ const EmailEditor = () => {
   };
 
   const handleSubmit = async () => {
+    document.getElementById('SubmitButton').innerHTML ="Loading...";
+
+    if (!templateTitle) {
+      document.getElementById('ErrorText').style.color = 'red';
+      document.getElementById('ErrorText').innerHTML = "Insert template title";
+      document.getElementById('SubmitButton').innerHTML = "Save template";
+      setTimeout(() => {
+        document.getElementById('ErrorText').innerHTML = "";
+      }, 4000);
+      return;
+    }
+    
     try {
       const emailTemplateData = {
+        title: templateTitle,
         htmlContent: editorContent,
         timestamp: serverTimestamp(),
         attachments: []
@@ -120,10 +134,18 @@ const EmailEditor = () => {
       });
 
       console.log('Email template saved with ID:', docRef.id);
-      alert('Email template saved successfully!');
+      document.getElementById('ErrorText').style.color = 'green';
+      document.getElementById('ErrorText').innerHTML ="Template saved successfully!"
+      setTimeout(() => {
+        document.getElementById('ErrorText').innerHTML = "";
+      }, 4000);
 
       // Clear the attachments state
       setAttachments([]);
+      setTemplateTitle(''); // Clear the template title
+      quillRef.current.root.innerHTML = ''; // Clear the editor content
+      document.getElementById('SubmitButton').innerHTML ="Save template"
+
     } catch (error) {
       console.error('Error saving email template:', error);
       alert('Error saving email template. Please try again.');
@@ -132,12 +154,15 @@ const EmailEditor = () => {
 
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px' }}>
-      <h2 style={{ margin: '0', padding: '0', marginBottom: '15px' }}>Email Editor</h2>
-      <div id="editor" style={{ height: '600px', marginBottom: '30px', border: '1px solid black', background: 'white' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '15px' }}>
+        <h2 style={{ margin: '0', padding: '0' }}>Email Editor</h2>
+        <input type="text" id='' placeholder="Template title" value={templateTitle} onChange={(e) => setTemplateTitle(e.target.value)}/>
       </div>
+      <div id="editor" style={{ height: '600px', marginBottom: '10px', border: '1px solid black', background: 'white' }}></div>
+      <div id='ErrorText' style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%', margin: '0px 0px 10px 0px', padding: '0', height: '15px', fontSize: '10px', color: 'red'}}></div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
-        <input type="file" multiple accept=".pdf" onChange={handleAttachmentChange} />
-        <button onClick={handleSubmit}>Save template</button>
+        <input type="file" multiple accept=".pdf" onChange={handleAttachmentChange} style={{border: 'none'}} />
+        <button id='SubmitButton' onClick={handleSubmit} style={{ marginLeft: '10px', width: '150px' }}>Save template</button>
       </div>
     </div>
   );
