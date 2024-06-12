@@ -3,7 +3,7 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { getFirestore, collection, addDoc, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../Firebase'; // Adjust the import based on your firebase configuration file
+import { storage } from '../../../Firebase';
 
 const EmailEditor = () => {
   const [editorContent, setEditorContent] = useState('');
