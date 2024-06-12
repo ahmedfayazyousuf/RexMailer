@@ -33,7 +33,6 @@ html, body{
     ::-webkit-scrollbar {
     display: none;
 }
-
 button {
   background-color: #46fa8b;
   color: black;
@@ -42,7 +41,28 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
-
 button:hover {
   background-color: #66fc9f;
+}
+
+.MenuItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 180px;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid lightgrey;
+  /* transition: 0.5s; */
+  height: 120px;
+  background-color: #f4f4f4;
+  color: black;
+  font-size: 14px;
+}
+
+.MenuItem:hover {
+  border: 1px solid #FF3380;
+  color: #FF3380
 }

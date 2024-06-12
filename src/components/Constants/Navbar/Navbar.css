@@ -43,11 +43,11 @@ nav{
   }
   
   .nav-link:hover {
-    color: #006326;
+    color: #c3024c;
   }
   
   .nav-link.active {
-    color: #006326;
+    color: #c3024c;
   }
   @media (max-width: 858px) {
 
