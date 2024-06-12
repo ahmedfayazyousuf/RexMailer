@@ -83,7 +83,7 @@ const EmailEditor = () => {
     if (!templateTitle) {
       document.getElementById('ErrorText').style.color = 'red';
       document.getElementById('ErrorText').innerHTML = "Insert template title";
-      document.getElementById('SubmitButton').innerHTML = "Save template";
+      document.getElementById('SubmitButton').innerHTML = "Save";
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
       }, 4000);
@@ -144,7 +144,7 @@ const EmailEditor = () => {
       setAttachments([]);
       setTemplateTitle(''); // Clear the template title
       quillRef.current.root.innerHTML = ''; // Clear the editor content
-      document.getElementById('SubmitButton').innerHTML ="Save template"
+      document.getElementById('SubmitButton').innerHTML ="Save"
 
     } catch (error) {
       console.error('Error saving email template:', error);
@@ -155,14 +155,14 @@ const EmailEditor = () => {
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '15px' }}>
-        <h2 style={{ margin: '0', padding: '0' }}>Email Editor</h2>
+        <h4 style={{ margin: '0', padding: '0' }}>Email Editor</h4>
         <input type="text" id='' placeholder="Template title" value={templateTitle} onChange={(e) => setTemplateTitle(e.target.value)}/>
       </div>
       <div id="editor" style={{ height: '600px', marginBottom: '10px', border: '1px solid black', background: 'white' }}></div>
       <div id='ErrorText' style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%', margin: '0px 0px 10px 0px', padding: '0', height: '15px', fontSize: '10px', color: 'red'}}></div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
         <input type="file" multiple accept=".pdf" onChange={handleAttachmentChange} style={{border: 'none'}} />
-        <button id='SubmitButton' onClick={handleSubmit} style={{ marginLeft: '10px', width: '150px' }}>Save template</button>
+        <button id='SubmitButton' onClick={handleSubmit} style={{ marginLeft: '10px', width: '120px' }}>Save</button>
       </div>
     </div>
   );
