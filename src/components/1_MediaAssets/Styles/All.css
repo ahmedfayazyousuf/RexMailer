@@ -66,3 +66,36 @@ button:hover {
   border: 1px solid #FF3380;
   color: #FF3380
 }
+
+.EditorDiv{
+  width: 80vw;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 0;
+}
+
+.MainDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100%;
+  background: white;
+  color: black;
+  background-image: url('../Home/Texture2.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+
+@media screen and (max-width: 1000px) { 
+  .DPhider {
+    display: none;
+  }
+  .EditorDiv{
+    width: 95vw;
+  }
+}
