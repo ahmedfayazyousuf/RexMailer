@@ -62,13 +62,11 @@ const SendEmails = () => {
 
   const handleSendEmails = async () => {
     if (!selectedTemplate || selectedContacts.length === 0) {
-      alert('Please select a template and at least one contact.');
+      alert("Please select a template and at least one contact.");
       return;
     }
   
     try {
-      const attachments = selectedTemplate.attachments || [];
-  
       const response = await fetch('https://rexmailerserver.vercel.app/send-email', {
         method: 'POST',
         headers: {
@@ -78,30 +76,22 @@ const SendEmails = () => {
           template: {
             title: selectedTemplate.title,
             content: selectedTemplate.htmlContent, // Assuming 'htmlContent' field in Firestore
-            attachments: attachments.map(att => ({
-              type: att.type,
-              filename: att.filename,
-              url: att.url
-            })),
           },
-          contacts: selectedContacts.map(contactId =>
-            contacts.find(contact => contact.id === contactId)
-          ),
+          contacts: selectedContacts.map(contactId => contacts.find(contact => contact.id === contactId)),
         }),
       });
   
       const data = await response.json();
       if (data.success) {
-        alert('Emails sent successfully!');
+        alert("Emails sent successfully!");
       } else {
-        alert('Failed to send emails.');
+        alert("Failed to send emails.");
       }
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert('Failed to send emails. Please try again later.');
+      alert("Failed to send emails. Please try again later.");
     }
   };
-  
   
 
   return (
