@@ -62,7 +62,7 @@ const SendEmails = () => {
 
   const handleSendEmails = async () => {
     if (!selectedTemplate || selectedContacts.length === 0) {
-      alert("Please select a template and at least one contact.");
+      alert('Please select a template and at least one contact.');
       return;
     }
   
@@ -75,23 +75,42 @@ const SendEmails = () => {
         body: JSON.stringify({
           template: {
             title: selectedTemplate.title,
-            content: selectedTemplate.htmlContent, // Assuming 'htmlContent' field in Firestore
+            content: addPdfLinkToContent(selectedTemplate), // Function to add PDF link if exists
           },
-          contacts: selectedContacts.map(contactId => contacts.find(contact => contact.id === contactId)),
+          contacts: selectedContacts.map(contactId =>
+            contacts.find(contact => contact.id === contactId)
+          ),
         }),
       });
   
       const data = await response.json();
       if (data.success) {
-        alert("Emails sent successfully!");
+        alert('Emails sent successfully!');
       } else {
-        alert("Failed to send emails.");
+        alert('Failed to send emails.');
       }
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert("Failed to send emails. Please try again later.");
+      alert('Failed to send emails. Please try again later.');
     }
   };
+  
+  // Function to add PDF link to content if attachments exist
+  const addPdfLinkToContent = (template) => {
+    let contentWithLink = template.htmlContent;
+  
+    if (template.attachments && template.attachments.length > 0) {
+      template.attachments.forEach(attachment => {
+        if (attachment.type === 'pdf') {
+          // Replace placeholder in content with PDF link
+          contentWithLink = contentWithLink.replace('{{pdfLink}}', attachment.url);
+        }
+      });
+    }
+  
+    return contentWithLink;
+  };
+  
   
 
   return (
