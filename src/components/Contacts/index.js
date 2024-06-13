@@ -1,7 +1,8 @@
+import { FaTrashCan } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa";
 import React, { useState, useEffect, useRef } from 'react';
-import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -22,12 +23,17 @@ const Contacts = () => {
 
   const handleAddContact = async () => {
     if (name && email) {
-      await addDoc(collection(db, 'Contacts'), { name, email });
-      setContacts([...contacts, { name, email }]);
+      const docRef = await addDoc(collection(db, 'Contacts'), { name, email });
+      setContacts([...contacts, { id: docRef.id, name, email }]);
       setShowModal(false);
       setName('');
       setEmail('');
     }
+  };
+
+  const handleDeleteContact = async (id) => {
+    await deleteDoc(doc(db, 'Contacts', id));
+    setContacts(contacts.filter(contact => contact.id !== id));
   };
 
   const handleClickOutside = (event) => {
@@ -55,16 +61,17 @@ const Contacts = () => {
         <span style={{ color: '#FF3380', fontWeight: '900' }}>Contacts</span>
       </h2>
 
-      <button onClick={() => setShowModal(true)} style={{ position: 'absolute', top: '70px', height: '60px', width: '60px', right: '20px', background: '#FF3380', color: 'white', border: 'none', borderRadius: '100px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
-        <FaPlus style={{ padding: '0', margin: '0', fontSize: '30px' }} />
+      <button onClick={() => setShowModal(true)} style={{ position: 'absolute', top: '60px', height: '50px', width: '50px', right: '10px', background: '#FF3380', color: 'white', border: 'none', borderRadius: '100px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+        <FaPlus style={{ padding: '0', margin: '0'}} />
       </button>
 
-      <table style={{ width: '80%', borderCollapse: 'collapse', marginTop: '20px', fontSize: '13px' }}>
+      <table className="ContactsTable">
         <thead>
           <tr style={{ background: '#46fa8b', color: 'black', fontWeight: '900', textAlign: 'center', borderRadius: '15px' }}>
             <th style={{ padding: '8px', width: '50px', borderRadius: '15px 0px 0px 0px' }}>S#</th>
             <th style={{ border: '1px solid #ddd', padding: '8px', borderTop: 'none' }}>Name</th>
-            <th style={{ padding: '8px', borderTop: 'none', borderRadius: '0px 15px 0px 0px' }}>Email</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px', borderTop: 'none' }}>Email</th>
+            <th style={{ padding: '8px', borderTop: 'none', borderRadius: '0px 15px 0px 0px' }}></th>
           </tr>
         </thead>
         <tbody>
@@ -73,6 +80,9 @@ const Contacts = () => {
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{index + 1}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.name}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.email}</td>
+              <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '50px' }}>
+                <FaTrashCan onClick={() => handleDeleteContact(contact.id)} style={{ color: 'red', cursor: 'pointer', fontSize: '15px', marginBottom: '-3px', padding: '0' }} />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -83,10 +93,10 @@ const Contacts = () => {
           <div ref={modalRef} style={{ background: 'white', boxShadow: '0px 0px 10px rgba(0,0,0,0.1)', borderRadius: '5px', padding: '30px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '10px', position: 'relative' }}>
             <h3 style={{ margin: '0', padding: '0', textAlign: 'center', width: '100%' }}>Add Contact</h3>
             <RxCross2 onClick={() => setShowModal(false)} style={{ position: 'absolute', top: '5px', right: '5px', fontSize: '20px', color: 'grey', cursor: 'pointer' }} />
-            <input type='text' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} style={{ width: '100%' }} />
-            <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%' }} />
+            <input type='text' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} style={{ width: '100%', border: '1px solid lightgrey' }} />
+            <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', border: '1px solid lightgrey' }} />
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-              <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: '#ccc', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '11px' }}>
+              <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: '#ddd', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '11px' }}>
                 Cancel
               </button>
               <button onClick={handleAddContact} style={{ padding: '10px 20px', background: '#FF3380', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '11px' }}>

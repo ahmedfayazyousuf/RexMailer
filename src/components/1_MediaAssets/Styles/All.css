@@ -97,11 +97,21 @@ input{
   font-size: 12px;
 }
 
+.ContactsTable {
+  width: 80%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
 @media screen and (max-width: 1000px) { 
   .DPhider {
     display: none;
   }
   .EditorDiv{
     width: 95vw;
+  }
+  .ContactsTable {
+    width: 97%;
   }
 }
