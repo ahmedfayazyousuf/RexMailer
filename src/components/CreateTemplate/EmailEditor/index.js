@@ -78,8 +78,8 @@ const EmailEditor = () => {
   };
 
   const handleSubmit = async () => {
-    document.getElementById('SubmitButton').innerHTML ="Loading...";
-
+    document.getElementById('SubmitButton').innerHTML = "Loading...";
+  
     if (!templateTitle) {
       document.getElementById('ErrorText').style.color = 'red';
       document.getElementById('ErrorText').innerHTML = "Insert template title";
@@ -89,7 +89,7 @@ const EmailEditor = () => {
       }, 4000);
       return;
     }
-    
+  
     try {
       const emailTemplateData = {
         title: templateTitle,
@@ -98,13 +98,14 @@ const EmailEditor = () => {
         attachments: []
       };
       const docRef = await addDoc(collection(db, 'EmailTemplates'), emailTemplateData);
-
+  
+      // Handle image and PDF attachments
       const attachmentPromises = attachments.map(async (attachment) => {
         const { file, type } = attachment;
         const filePath = `EmailTemplates/${docRef.id}/${file.name}`;
         const fileRef = ref(storage, filePath);
         const uploadTask = uploadBytesResumable(fileRef, file);
-
+  
         return new Promise((resolve, reject) => {
           uploadTask.on(
             'state_changed',
@@ -121,36 +122,50 @@ const EmailEditor = () => {
           );
         });
       });
-
+  
       const uploadedAttachments = await Promise.all(attachmentPromises);
-
+  
+      // Update attachments in the template document
       const updatedAttachments = uploadedAttachments.map(({ downloadURL, type }) => ({
         url: downloadURL,
         type
       }));
-
+  
+      // Prepare updated HTML content with image and PDF links
+      let updatedHtmlContent = editorContent; // Start with the current editor content
+  
+      for (const attachment of updatedAttachments) {
+        if (attachment.type === 'pdf') {
+          // Add PDF link to the HTML content
+          updatedHtmlContent += `<p><a href="${attachment.url}" target="_blank">Link to PDF</a></p>`;
+        }
+      }
+  
+      // Update the document with attachments and updated HTML content
       await updateDoc(doc(db, 'EmailTemplates', docRef.id), {
-        attachments: updatedAttachments
+        attachments: updatedAttachments,
+        htmlContent: updatedHtmlContent
       });
-
+  
       console.log('Email template saved with ID:', docRef.id);
       document.getElementById('ErrorText').style.color = 'green';
-      document.getElementById('ErrorText').innerHTML ="Template saved successfully!"
+      document.getElementById('ErrorText').innerHTML = "Template saved successfully!";
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
       }, 4000);
-
+  
       // Clear the attachments state
       setAttachments([]);
       setTemplateTitle(''); // Clear the template title
       quillRef.current.root.innerHTML = ''; // Clear the editor content
-      document.getElementById('SubmitButton').innerHTML ="Save"
-
+      document.getElementById('SubmitButton').innerHTML = "Save";
+  
     } catch (error) {
       console.error('Error saving email template:', error);
       alert('Error saving email template. Please try again.');
     }
   };
+  
 
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px' }}>
