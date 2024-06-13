@@ -60,15 +60,39 @@ const SendEmails = () => {
     setSelectedContacts(recentContactsList);
   };
 
-  const handleSendEmails = () => {
+  const handleSendEmails = async () => {
     if (!selectedTemplate || selectedContacts.length === 0) {
       alert("Please select a template and at least one contact.");
       return;
     }
-    // Implement the logic to send emails using the selectedTemplate and selectedContacts
-    console.log("Sending email with template:", selectedTemplate);
-    console.log("Sending to contacts:", selectedContacts);
+  
+    try {
+      const response = await fetch('https://rexmailerserver.vercel.app/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          template: {
+            title: selectedTemplate.title,
+            content: selectedTemplate.htmlContent, // Assuming 'htmlContent' field in Firestore
+          },
+          contacts: selectedContacts.map(contactId => contacts.find(contact => contact.id === contactId)),
+        }),
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        alert("Emails sent successfully!");
+      } else {
+        alert("Failed to send emails.");
+      }
+    } catch (error) {
+      console.error('Error sending emails:', error);
+      alert("Failed to send emails. Please try again later.");
+    }
   };
+  
 
   return (
         <div className='MainDiv' style={{ padding: '70px 0px 70px 0px', height: '100%', justifyContent: 'flex-start' }}>
