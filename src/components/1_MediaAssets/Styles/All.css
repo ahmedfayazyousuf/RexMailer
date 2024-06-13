@@ -104,6 +104,38 @@ input{
   font-size: 13px;
 }
 
+.EmailTemplatesandContactsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+  height: 50px;
+  overflow-y: scroll;
+}
+
+.SendEmailsContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+  /* padding: 10px; */
+}
+
+.ButtonSendEmails {
+  padding: 10px 20px;
+  background: #FF3380;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50vw;
+}
+.ButtonSendEmails:hover {
+  background: #dd3676;
+}
+
+
 @media screen and (max-width: 1000px) { 
   .DPhider {
     display: none;
@@ -113,5 +145,11 @@ input{
   }
   .ContactsTable {
     width: 97%;
+  }
+  .SendEmailsContainer{
+    width: 97vw;
+  }
+  .ButtonSendEmails{
+    width: 97vw;
   }
 }
