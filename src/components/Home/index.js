@@ -24,17 +24,17 @@ const Home = () => {
                     </div>
                 </NavLink>
 
-                <NavLink to="/SendEmails" style={{textDecoration: 'none'}}>
-                    <div className="MenuItem">
-                        <RiMailSendFill style={{fontSize: '30px'}}/>
-                        <p style={{padding: '0', margin: '0'}}>Send Emails</p>
-                    </div>
-                </NavLink>
-
                 <NavLink to="/Contacts" style={{textDecoration: 'none'}}>
                     <div className="MenuItem">
                         <RiContactsBook3Fill style={{fontSize: '30px'}}/>
                         <p style={{padding: '0', margin: '0'}}>Contacts</p>
+                    </div>
+                </NavLink>
+
+                <NavLink to="/SendEmails" style={{textDecoration: 'none'}}>
+                    <div className="MenuItem">
+                        <RiMailSendFill style={{fontSize: '30px'}}/>
+                        <p style={{padding: '0', margin: '0'}}>Send Emails</p>
                     </div>
                 </NavLink>
 
