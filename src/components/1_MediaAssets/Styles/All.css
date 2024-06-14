@@ -107,7 +107,6 @@ input{
 .EmailTemplatesandContactsTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
   font-size: 13px;
   height: 50px;
   overflow-y: scroll;

@@ -6,6 +6,7 @@ import Home from './components/Home';
 import CreateTemplate from './components/CreateTemplate';
 import SendEmails from './components/SendEmails';
 import Contacts from './components/Contacts';
+import EmailTemplates from './components/EmailTemplates';
 import Navbar from './components/Constants/Navbar';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route path="/CreateTemplate" element={<CreateTemplate />} />
         <Route path="/SendEmails" element={<SendEmails />} />
+        <Route path="/EmailTemplates" element={<EmailTemplates />} />
         <Route path="/Contacts" element={<Contacts />} />
       </Routes>
     </Router>

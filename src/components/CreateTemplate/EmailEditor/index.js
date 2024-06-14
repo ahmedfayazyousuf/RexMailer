@@ -171,7 +171,7 @@ const EmailEditor = () => {
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '15px' }}>
         <h4 style={{ margin: '0', padding: '0' }}>Email Editor</h4>
-        <input type="text" id='' placeholder="Template title" value={templateTitle} onChange={(e) => setTemplateTitle(e.target.value)}/>
+        <input type="text" id='' placeholder="Email Subject" value={templateTitle} onChange={(e) => setTemplateTitle(e.target.value)} style={{width: '45%'}}/>
       </div>
       <div id="editor" style={{ height: '600px', marginBottom: '10px', border: '1px solid black', background: 'white' }}></div>
       <div id='ErrorText' style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%', margin: '0px 0px 10px 0px', padding: '0', height: '15px', fontSize: '10px', color: 'red'}}></div>

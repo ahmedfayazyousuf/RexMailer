@@ -51,18 +51,18 @@ const NavbarMain = () => {
             </NavLink> 
           </li>
           <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/CreateTemplate">
-              Create template
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/SendEmails">
-              Send emails
+            <NavLink className="nav-link" onClick={closeNavvy} to="/EmailTemplates">
+              Email templates
             </NavLink>
           </li>
           <li>
             <NavLink className="nav-link" onClick={closeNavvy} to="/Contacts">
               Contacts
+            </NavLink>
+          </li>
+          <li>
+            <NavLink className="nav-link" onClick={closeNavvy} to="/SendEmails">
+              Send emails
             </NavLink>
           </li>
         </ul>
