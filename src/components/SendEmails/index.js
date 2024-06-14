@@ -79,7 +79,7 @@ const SendEmails = () => {
     }
   
     try {
-      const response = await fetch('https://rexmailerserver.vercel.app/send-email', {
+      const response = await fetch('https://rexmailerservernew.vercel.app/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
