@@ -1,5 +1,5 @@
 import React from 'react';
-import '../1_MediaAssets/Styles/All.css';
+import '../../1_MediaAssets/Styles/All.css';
 import EmailEditor from './EmailEditor/index.js';
 
 const CreateTemplate = () => {

@@ -69,7 +69,12 @@ const SendEmails = () => {
 
   const handleSendEmails = async () => {
     if (!selectedTemplate || selectedContacts.length === 0) {
-      alert("Please select a template and at least one contact.");
+      // alert("Please select a template and at least one contact.");
+      document.getElementById('ErrorText').style.color = 'red';
+      document.getElementById('ErrorText').innerHTML = "Please select a template and at least one contact.";
+      setTimeout(() => {
+        document.getElementById('ErrorText').innerHTML = "";
+      }, 4000);
       return;
     }
   
@@ -90,13 +95,28 @@ const SendEmails = () => {
   
       const data = await response.json();
       if (data.success) {
-        alert("Emails sent successfully!");
+        // alert("Emails sent successfully!");
+        document.getElementById('ErrorText').style.color = 'green';
+        document.getElementById('ErrorText').innerHTML = "Emails sent successfully!";
+        setTimeout(() => {
+          document.getElementById('ErrorText').innerHTML = "";
+        }, 4000);
       } else {
-        alert("Failed to send emails.");
+        // alert("Failed to send emails.");
+        document.getElementById('ErrorText').style.color = 'red';
+        document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
+        setTimeout(() => {
+          document.getElementById('ErrorText').innerHTML = "";
+        }, 4000);
       }
     } catch (error) {
       console.error('Error sending emails:', error);
-      alert("Failed to send emails. Please try again later.");
+      // alert("Failed to send emails. Please try again later.");
+      document.getElementById('ErrorText').style.color = 'red';
+      document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
+      setTimeout(() => {
+        document.getElementById('ErrorText').innerHTML = "";
+      }, 4000);
     }
   };
 
@@ -167,7 +187,7 @@ const SendEmails = () => {
             </tbody>
           </table>
         </div>
-
+        <div id='ErrorText' style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '10px 0px -10px 0px', padding: '0', height: '15px', fontSize: '12px', color: 'red'}}></div>
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <button className='ButtonSendEmails' onClick={handleSendEmails}>
             Send Emails

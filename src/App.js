@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // MAIN PAGES
 import Home from './components/Home';
-import CreateTemplate from './components/CreateTemplate';
+import CreateTemplate from './components/EmailTemplates/CreateTemplate';
 import SendEmails from './components/SendEmails';
 import Contacts from './components/Contacts';
 import EmailTemplates from './components/EmailTemplates';

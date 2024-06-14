@@ -3,7 +3,7 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { getFirestore, collection, addDoc, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../../Firebase';
+import { storage } from '../../../../Firebase';
 
 const EmailEditor = () => {
   const [editorContent, setEditorContent] = useState('');
@@ -82,7 +82,7 @@ const EmailEditor = () => {
   
     if (!templateTitle) {
       document.getElementById('ErrorText').style.color = 'red';
-      document.getElementById('ErrorText').innerHTML = "Insert template title";
+      document.getElementById('ErrorText').innerHTML = "Insert email subject";
       document.getElementById('SubmitButton').innerHTML = "Save";
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
