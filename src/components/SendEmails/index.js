@@ -1,3 +1,5 @@
+import Illustration1 from '../1_MediaAssets/Home/Illustration1.png';
+import Illustration2 from '../1_MediaAssets/Home/Illustration2.png';
 import React, { useState, useEffect } from 'react';
 import '../1_MediaAssets/Styles/All.css';
 import { getFirestore, collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
@@ -104,6 +106,9 @@ const SendEmails = () => {
         <span>Send </span>
         <span style={{ color: '#FF3380', fontWeight: '900' }}>Emails</span>
       </h2>
+
+      <img className="DPhider HoverFloat" src={Illustration1} alt="lalaland" style={{position: 'absolute', bottom: '0', right: '0', width: '250px'}}/>
+      <img className="DPhider HoverFloat" src={Illustration2} alt="lalaland" style={{position: 'absolute', top: '50px', left: '0', width: '230px'}}/>
 
       <div className='SendEmailsContainer'>
         <h3 style={{margin: '0', padding: '0', marginTop: '20px'}}>Step 1 - Choose Email Template</h3>

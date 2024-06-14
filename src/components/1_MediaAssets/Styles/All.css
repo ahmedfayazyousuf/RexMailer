@@ -121,6 +121,15 @@ input{
   /* padding: 10px; */
 }
 
+.HoverFloat {
+  transition: transform 0.5s ease-in-out; /* Adjust the duration and timing function as needed */
+  cursor: pointer;
+}
+
+.HoverFloat:hover {
+  transform: translateY(-3px); /* Lift the div 5px up on hover */
+}
+
 .ButtonSendEmails {
   padding: 10px 20px;
   background: #FF3380;

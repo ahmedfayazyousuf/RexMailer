@@ -13,14 +13,14 @@ const Home = () => {
             
             <h2 style={{textAlign: 'center'}}><span>Welcome to the </span><span style={{color: '#FF3380', fontWeight: '900'}}>REX Mailer!</span></h2>
             <div style={{ padding: '0px', borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', flexWrap: 'wrap', margin: '0px 10px 0px 10px'}}>
-                <img className="DPhider" src={Illustration1} alt="lalaland" style={{position: 'absolute', bottom: '0', right: '0', width: '250px'}}/>
-                <img className="DPhider" src={Illustration2} alt="lalaland" style={{position: 'absolute', top: '50px', left: '0', width: '230px'}}/>
+                <img className="DPhider HoverFloat" src={Illustration1} alt="lalaland" style={{position: 'absolute', bottom: '0', right: '0', width: '250px'}}/>
+                <img className="DPhider HoverFloat" src={Illustration2} alt="lalaland" style={{position: 'absolute', top: '50px', left: '0', width: '230px'}}/>
 
                 
-                <NavLink to="/CreateTemplate" style={{textDecoration: 'none'}}>
+                <NavLink to="/EmailTemplates" style={{textDecoration: 'none'}}>
                     <div className="MenuItem">
                         <HiTemplate style={{fontSize: '33px'}}/>
-                        <p style={{padding: '0', margin: '0'}}>Create Template</p>
+                        <p style={{padding: '0', margin: '0'}}>Email Templates</p>
                     </div>
                 </NavLink>
 
