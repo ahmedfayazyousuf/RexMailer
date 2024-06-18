@@ -23,6 +23,8 @@ const EmailEditor = () => {
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
             ['link', 'image'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
             ['clean']
           ],
           handlers: {
@@ -31,9 +33,11 @@ const EmailEditor = () => {
         }
       }
     });
+
     quill.on('text-change', () => {
       setEditorContent(quill.root.innerHTML);
     });
+
     quillRef.current = quill;
   }, []);
 
@@ -75,6 +79,13 @@ const EmailEditor = () => {
       ...prevAttachments,
       ...files.map((file) => ({ file, type: 'pdf' }))
     ]);
+  };
+
+  const handleAlignment = (value) => {
+    const range = quillRef.current.getSelection();
+    if (range) {
+      quillRef.current.format('align', value);
+    }
   };
 
   const handleSubmit = async () => {
@@ -165,7 +176,6 @@ const EmailEditor = () => {
       alert('Error saving email template. Please try again.');
     }
   };
-  
 
   return (
     <div style={{ padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '15px' }}>
@@ -178,6 +188,12 @@ const EmailEditor = () => {
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
         <input type="file" multiple accept=".pdf" onChange={handleAttachmentChange} style={{border: 'none'}} />
         <button id='SubmitButton' onClick={handleSubmit} style={{ marginLeft: '10px', width: '120px' }}>Save</button>
+        <select onChange={(e) => handleAlignment(e.target.value)}>
+          <option value="">Align</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+          <option value="justify">Justify</option>
+        </select>
       </div>
     </div>
   );
