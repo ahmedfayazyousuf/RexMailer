@@ -80,7 +80,7 @@ const EmailEditor = () => {
       ...files.map((file) => ({ file, type: 'pdf' }))
     ]);
   };
-
+  // eslint-disable-next-line 
   const handleAlignment = (value) => {
     const range = quillRef.current.getSelection();
     if (range) {
@@ -182,7 +182,7 @@ const EmailEditor = () => {
       for (const attachment of updatedAttachments) {
         if (attachment.type === 'pdf') {
           // Add PDF link to the HTML content
-          updatedHtmlContent += `<p><a href="${attachment.url}" target="_blank">Link to PDF</a></p>`;
+          updatedHtmlContent += `<p><a href="${attachment.url}" target="_blank">Course Flyer PDF</a></p>`;
         }
       }
   
@@ -222,12 +222,12 @@ const EmailEditor = () => {
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
         <input type="file" multiple accept=".pdf" onChange={handleAttachmentChange} style={{border: 'none'}} />
         <button id='SubmitButton' onClick={handleSubmit} style={{ marginLeft: '10px', width: '120px' }}>Save</button>
-        <select onChange={(e) => handleAlignment(e.target.value)}>
+        {/* <select onChange={(e) => handleAlignment(e.target.value)}>
           <option value="">Align</option>
           <option value="center">Center</option>
           <option value="right">Right</option>
           <option value="justify">Justify</option>
-        </select>
+        </select> */}
       </div>
     </div>
   );
