@@ -104,7 +104,7 @@ const EmailEditor = () => {
     const emailSignature = `
       <table>
         <tr>
-          <td style="padding: 5px;">
+          <td style="padding: 5px 5px 5px 0px;">
             <a href="https://www.instagram.com/rexmedicalevents/" target="_blank">
               <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FInstagram.png?alt=media&token=c824f11d-f6d5-4193-adef-d975dd2e9acc" alt="Instagram" style="width: 24px; height: 24px;">
             </a>
