@@ -104,22 +104,27 @@ const EmailEditor = () => {
     const emailSignature = `
       <table>
         <tr>
-          <td style="padding: 10px;">
+          <td style="padding: 5px;">
             <a href="https://www.instagram.com/rexmedicalevents/" target="_blank">
               <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FInstagram.png?alt=media&token=c824f11d-f6d5-4193-adef-d975dd2e9acc" alt="Instagram" style="width: 24px; height: 24px;">
             </a>
           </td>
-          <td style="padding: 10px;">
+          <td style="padding: 5px;">
             <a href="https://www.facebook.com/rexmedicalevents/" target="_blank">
               <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FFacebook.png?alt=media&token=2da9f0cd-67af-4d5e-82a8-d75b8f6f8b3f" alt="Facebook" style="width: 24px; height: 24px;">
             </a>
           </td>
-          <td style="padding: 10px;">
+          <td style="padding: 5px;">
             <a href="https://wa.me/971547773686" target="_blank">
               <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FWhatsapp.png?alt=media&token=b1600d61-6bad-471a-ba02-7f26febbcf09" alt="WhatsApp" style="width: 24px; height: 24px;">
             </a>
           </td>
-          <td style="padding: 10px;">
+          <td style="padding: 5px;">
+            <a href="https://www.linkedin.com/company/rexmedicalevents/" target="_blank">
+              <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FLinkedin.png?alt=media&token=6e01de81-67c7-4ea7-8d6a-2102b1f6c67c" alt="LinkedIn" style="width: 24px; height: 24px;">
+            </a>
+          </td>
+          <td style="padding: 5px;">
             <a href="https://www.rexmedicalevents.com/" target="_blank">
               <img src="https://firebasestorage.googleapis.com/v0/b/rexmailerdatabase.appspot.com/o/SocialIcons%2FWebsite.png?alt=media&token=2f28e356-d2ce-4f78-a931-c5afc0d656e3" alt="Website" style="width: 24px; height: 24px;">
             </a>
