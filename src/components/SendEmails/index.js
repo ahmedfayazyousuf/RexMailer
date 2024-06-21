@@ -71,21 +71,27 @@ const SendEmails = () => {
       }, 4000);
       return;
     }
-
+  
     try {
       const allContacts = [];
       console.log('Selected address books:', selectedAddressBooks);
+      
       for (const addressBookId of selectedAddressBooks) {
-        const addressBookDoc = await getDoc(doc(db, 'AddressBooks', addressBookId));
+        const addressBookDoc = await getDoc(doc(db, 'Contacts', addressBookId)); // Assuming 'Contacts' is the collection name
         if (addressBookDoc.exists()) {
-          console.log('Contacts in address book:', addressBookDoc.data().contacts);
-          allContacts.push(...addressBookDoc.data().contacts);
+          const contacts = addressBookDoc.data().contacts;
+          console.log('Contacts in address book:', contacts);
+          
+          // Push each contact to allContacts array
+          allContacts.push(...contacts);
         } else {
           console.error('Address book not found:', addressBookId);
         }
       }
-
+  
       console.log('All contacts to send emails:', allContacts);
+      
+      // Prepare and send email request
       const response = await fetch('https://rexmailerservernew.vercel.app/send-email', {
         method: 'POST',
         headers: {
@@ -99,7 +105,7 @@ const SendEmails = () => {
           contacts: allContacts,
         }),
       });
-
+  
       const data = await response.json();
       if (data.success) {
         document.getElementById('ErrorText').style.color = 'green';
@@ -124,6 +130,7 @@ const SendEmails = () => {
       }, 4000);
     }
   };
+  
 
   return (
     <div className='MainDiv' style={{ padding: '70px 0px 70px 0px', height: '100%', justifyContent: 'flex-start' }}>
