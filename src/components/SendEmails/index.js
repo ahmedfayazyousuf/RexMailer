@@ -2,7 +2,7 @@ import Illustration1 from '../1_MediaAssets/Home/Illustration1.png';
 import Illustration2 from '../1_MediaAssets/Home/Illustration2.png';
 import React, { useState, useEffect } from 'react';
 import '../1_MediaAssets/Styles/All.css';
-import { getFirestore, collection, getDocs, query, orderBy, Timestamp, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 
 const SendEmails = () => {
   const [templates, setTemplates] = useState([]);
@@ -74,13 +74,18 @@ const SendEmails = () => {
 
     try {
       const allContacts = [];
+      console.log('Selected address books:', selectedAddressBooks);
       for (const addressBookId of selectedAddressBooks) {
         const addressBookDoc = await getDoc(doc(db, 'AddressBooks', addressBookId));
         if (addressBookDoc.exists()) {
+          console.log('Contacts in address book:', addressBookDoc.data().contacts);
           allContacts.push(...addressBookDoc.data().contacts);
+        } else {
+          console.error('Address book not found:', addressBookId);
         }
       }
 
+      console.log('All contacts to send emails:', allContacts);
       const response = await fetch('https://rexmailerservernew.vercel.app/send-email', {
         method: 'POST',
         headers: {
@@ -103,6 +108,7 @@ const SendEmails = () => {
           document.getElementById('ErrorText').innerHTML = "";
         }, 4000);
       } else {
+        console.error('Failed to send emails:', data);
         document.getElementById('ErrorText').style.color = 'red';
         document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
         setTimeout(() => {
