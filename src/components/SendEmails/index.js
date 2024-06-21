@@ -2,13 +2,13 @@ import Illustration1 from '../1_MediaAssets/Home/Illustration1.png';
 import Illustration2 from '../1_MediaAssets/Home/Illustration2.png';
 import React, { useState, useEffect } from 'react';
 import '../1_MediaAssets/Styles/All.css';
-import { getFirestore, collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, orderBy, Timestamp, doc, getDoc } from 'firebase/firestore';
 
 const SendEmails = () => {
   const [templates, setTemplates] = useState([]);
-  const [contacts, setContacts] = useState([]);
+  const [addressBooks, setAddressBooks] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [selectedAddressBooks, setSelectedAddressBooks] = useState([]);
   const db = getFirestore();
 
   useEffect(() => {
@@ -18,67 +18,69 @@ const SendEmails = () => {
       setTemplates(templatesList);
     };
 
-    const fetchContacts = async () => {
-      const querySnapshot = await getDocs(query(collection(db, 'Contacts'), orderBy('timestamp', 'desc')));
-      const contactsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
-      }));
-      setContacts(contactsList);
+    const fetchAddressBooks = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Contacts'));
+        const addressBooksList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setAddressBooks(addressBooksList);
+      } catch (error) {
+        console.error('Error fetching address books:', error);
+      }
     };
 
     fetchTemplates();
-    fetchContacts();
+    fetchAddressBooks();
   }, [db]);
 
   const handleSelectTemplate = (template) => {
     setSelectedTemplate(template);
   };
 
-  const handleSelectContact = (contactId) => {
-    setSelectedContacts((prevSelectedContacts) => {
-      if (prevSelectedContacts.includes(contactId)) {
-        return prevSelectedContacts.filter(id => id !== contactId);
+  const handleSelectAddressBook = (addressBookId) => {
+    setSelectedAddressBooks((prevSelectedAddressBooks) => {
+      if (prevSelectedAddressBooks.includes(addressBookId)) {
+        return prevSelectedAddressBooks.filter(id => id !== addressBookId);
       } else {
-        return [...prevSelectedContacts, contactId];
+        return [...prevSelectedAddressBooks, addressBookId];
       }
     });
   };
 
-  const handleCheckboxChange = (event, contactId) => {
+  const handleCheckboxChange = (event, addressBookId) => {
     event.stopPropagation();
-    handleSelectContact(contactId);
+    handleSelectAddressBook(addressBookId);
   };
 
-  const handleSelectAllContacts = () => {
-    if (selectedContacts.length === contacts.length) {
-      setSelectedContacts([]);
+  const handleSelectAllAddressBooks = () => {
+    if (selectedAddressBooks.length === addressBooks.length) {
+      setSelectedAddressBooks([]);
     } else {
-      setSelectedContacts(contacts.map(contact => contact.id));
+      setSelectedAddressBooks(addressBooks.map(addressBook => addressBook.id));
     }
   };
 
-  const handleSelectRecentContacts = async () => {
-    const oneDayAgo = Timestamp.now().toMillis() - (24 * 60 * 60 * 1000);
-    const recentContactsQuery = query(collection(db, 'Contacts'), where('timestamp', '>=', Timestamp.fromMillis(oneDayAgo)));
-    const querySnapshot = await getDocs(recentContactsQuery);
-    const recentContactsList = querySnapshot.docs.map(doc => doc.id);
-    setSelectedContacts(recentContactsList);
-  };
-
   const handleSendEmails = async () => {
-    if (!selectedTemplate || selectedContacts.length === 0) {
-      // alert("Please select a template and at least one contact.");
+    if (!selectedTemplate || selectedAddressBooks.length === 0) {
       document.getElementById('ErrorText').style.color = 'red';
-      document.getElementById('ErrorText').innerHTML = "Please select a template and at least one contact.";
+      document.getElementById('ErrorText').innerHTML = "Please select a template and at least one address book.";
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
       }, 4000);
       return;
     }
-  
+
     try {
+      const allContacts = [];
+      for (const addressBookId of selectedAddressBooks) {
+        const addressBookDoc = await getDoc(doc(db, 'AddressBooks', addressBookId));
+        if (addressBookDoc.exists()) {
+          allContacts.push(...addressBookDoc.data().contacts);
+        }
+      }
+
       const response = await fetch('https://rexmailerservernew.vercel.app/send-email', {
         method: 'POST',
         headers: {
@@ -87,22 +89,20 @@ const SendEmails = () => {
         body: JSON.stringify({
           template: {
             title: selectedTemplate.title,
-            content: selectedTemplate.htmlContent, // Assuming 'htmlContent' field in Firestore
+            content: selectedTemplate.htmlContent,
           },
-          contacts: selectedContacts.map(contactId => contacts.find(contact => contact.id === contactId)),
+          contacts: allContacts,
         }),
       });
-  
+
       const data = await response.json();
       if (data.success) {
-        // alert("Emails sent successfully!");
         document.getElementById('ErrorText').style.color = 'green';
         document.getElementById('ErrorText').innerHTML = "Emails sent successfully!";
         setTimeout(() => {
           document.getElementById('ErrorText').innerHTML = "";
         }, 4000);
       } else {
-        // alert("Failed to send emails.");
         document.getElementById('ErrorText').style.color = 'red';
         document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
         setTimeout(() => {
@@ -111,7 +111,6 @@ const SendEmails = () => {
       }
     } catch (error) {
       console.error('Error sending emails:', error);
-      // alert("Failed to send emails. Please try again later.");
       document.getElementById('ErrorText').style.color = 'red';
       document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
       setTimeout(() => {
@@ -155,12 +154,11 @@ const SendEmails = () => {
           </table>
         </div>
 
-        <h3 style={{margin: '0', padding: '0', marginTop: '40px'}}>Step 2 - Choose Recipient Contacts</h3>
+        <h3 style={{margin: '0', padding: '0', marginTop: '40px'}}>Step 2 - Choose Address Books</h3>
         <div className='EmailTemplatesandContactsTable' style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', fontSize: '10px', gap: '10px', padding: '0', margin: '0', marginBottom: '-15px' }}>
-          <button onClick={handleSelectAllContacts} style={{ fontSize: '10px' }}>
-            {selectedContacts.length === contacts.length ? 'Deselect All' : 'Select All'}
+          <button onClick={handleSelectAllAddressBooks} style={{ fontSize: '10px' }}>
+            {selectedAddressBooks.length === addressBooks.length ? 'Deselect All' : 'Select All'}
           </button>
-          <button style={{fontSize: '10px'}} onClick={handleSelectRecentContacts}>Select contacts added in the past 24 hours</button>
         </div>
         
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', width: '100%', maxHeight: '400px', overflowY: 'scroll', padding: '0', marginTop: '20px'}}>
@@ -168,20 +166,18 @@ const SendEmails = () => {
             <thead>
               <tr style={{ color: 'black', fontWeight: '900', textAlign: 'center', borderRadius: '15px', position: 'sticky', top: '0', width: '100%'}}>
                 <th style={{ padding: '8px', width: '50px', borderRadius: '15px 0px 0px 0px', background: '#46fa8b'}}>Select</th>
-                <th style={{ padding: '8px', background: '#46fa8b' }}>Name</th>
-                <th style={{ padding: '8px', background: '#46fa8b' }}>Email</th>
+                <th style={{ padding: '8px', background: '#46fa8b' }}>Address Book Name</th>
                 <th style={{ padding: '8px', borderRadius: '0px 15px 0px 0px', background: '#46fa8b'}}>Date added</th>
               </tr>
             </thead>
             <tbody>
-              {contacts.map((contact, index) => (
-                <tr key={contact.id} style={{ background: index % 2 === 0 ? '#c2fcd9' : '#f2fff7', cursor: 'pointer' }} onClick={() => handleSelectContact(contact.id)} >
+              {addressBooks.map((addressBook, index) => (
+                <tr key={addressBook.id} style={{ background: index % 2 === 0 ? '#c2fcd9' : '#f2fff7', cursor: 'pointer' }} onClick={() => handleSelectAddressBook(addressBook.id)} >
                   <td style={{ textAlign: 'center', border: '1px solid #ddd', padding: '8px' }}>
-                    <input type="checkbox" checked={selectedContacts.includes(contact.id)} onChange={(e) => handleCheckboxChange(e, contact.id)} />
+                    <input type="checkbox" checked={selectedAddressBooks.includes(addressBook.id)} onChange={(e) => handleCheckboxChange(e, addressBook.id)} />
                   </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.name}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.email}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.timestamp ? contact.timestamp.toLocaleString() : 'N/A'}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{addressBook.name}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{addressBook.timestamp ? addressBook.timestamp.toLocaleString() : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,54 +1,71 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { FaTrashCan } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa";
-import React, { useState, useEffect, useRef } from 'react';
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { serverTimestamp } from 'firebase/firestore';
+import * as XLSX from 'xlsx';
 
-const Contacts = () => {
+const AddressBook = () => {
   const [contacts, setContacts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [excelFile, setExcelFile] = useState(null);
   const modalRef = useRef(null);
   const db = getFirestore();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const querySnapshot = await getDocs(collection(db, 'Contacts'));
-      const contactsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
-      }));
-      setContacts(contactsList);
+      try {
+        console.log(`Fetching contacts for document ID: ${id}`);
+        const docRef = doc(db, 'Contacts', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setContacts(docSnap.data().contacts || []);
+        } else {
+          console.error("No such document!");
+        }
+      } catch (error) {
+        console.error('Error fetching document:', error);
+      }
     };
     fetchContacts();
-  }, [db]);
+  }, [id, db]);
 
   const handleAddContact = async () => {
     if (name && email) {
-      const docRef = await addDoc(collection(db, 'Contacts'), {
-        name,
-        email,
-        timestamp: serverTimestamp()
-      });
       const newContact = {
-        id: docRef.id,
         name,
         email,
-        timestamp: new Date() // This will show the local time until Firestore returns the actual server time
+        timestamp: new Date()
       };
-      setContacts([...contacts, newContact]);
+      const updatedContacts = [...contacts, newContact];
+      await updateDoc(doc(db, 'Contacts', id), {
+        contacts: updatedContacts
+      });
+      setContacts(updatedContacts);
       setShowModal(false);
       setName('');
       setEmail('');
     }
   };
 
-  const handleDeleteContact = async (id) => {
-    await deleteDoc(doc(db, 'Contacts', id));
-    setContacts(contacts.filter(contact => contact.id !== id));
+  const convertFirestoreTimestampToDate = (timestamp) => {
+    if (!timestamp) return null;
+    if (timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000);
+    }
+    return new Date(timestamp);
+  };
+
+  const handleDeleteContact = async (index) => {
+    const updatedContacts = contacts.filter((_, i) => i !== index);
+    await updateDoc(doc(db, 'Contacts', id), {
+      contacts: updatedContacts
+    });
+    setContacts(updatedContacts);
   };
 
   const handleClickOutside = (event) => {
@@ -69,6 +86,43 @@ const Contacts = () => {
     };
   }, [showModal]);
 
+  const handleExcelUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setExcelFile(file);
+    }
+  };
+
+  const handleBulkUpload = async () => {
+    if (!excelFile) {
+      console.error('No file uploaded');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      const newContacts = json.slice(1).map(row => ({
+        name: row[0],
+        email: row[1],
+        timestamp: new Date()
+      }));
+
+      const updatedContacts = [...contacts, ...newContacts];
+      await updateDoc(doc(db, 'Contacts', id), {
+        contacts: updatedContacts
+      });
+      setContacts(updatedContacts);
+      setExcelFile(null);
+    };
+    reader.readAsArrayBuffer(excelFile);
+  };
+
   return (
     <div className='MainDiv' style={{ paddingTop: '70px', height: 'calc(100vh - 70px)', justifyContent: 'flex-start' }}>
       <h2 style={{ textAlign: 'center', margin: '0' }}>
@@ -79,6 +133,12 @@ const Contacts = () => {
       <button onClick={() => setShowModal(true)} style={{ position: 'absolute', top: '60px', height: '50px', width: '50px', right: '10px', background: '#FF3380', color: 'white', border: 'none', borderRadius: '100px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
         <FaPlus style={{ padding: '0', margin: '0'}} />
       </button>
+
+      <div>
+        <p>Want to add bulk contacts? Upload an excel file with the first column with the contact names, and the second column with contact emails.</p>
+        <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} style={{ top: '100px', right: '50px', cursor: 'pointer', height: '50px', width: '500px' }} />
+        <button onClick={handleBulkUpload}>Upload Bulk Contacts</button>
+      </div>
 
       <table className="ContactsTable">
         <thead>
@@ -97,10 +157,10 @@ const Contacts = () => {
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.name}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.email}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                {contact.timestamp ? contact.timestamp.toLocaleString() : 'N/A'}
-              </td>
+                {contact.timestamp ? convertFirestoreTimestampToDate(contact.timestamp).toLocaleString() : 'N/A'}
+                </td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '50px' }}>
-                <FaTrashCan onClick={() => handleDeleteContact(contact.id)} style={{ color: 'red', cursor: 'pointer', fontSize: '15px', marginBottom: '-3px', padding: '0' }} />
+                <FaTrashCan onClick={() => handleDeleteContact(index)} style={{ color: 'red', cursor: 'pointer', fontSize: '15px', marginBottom: '-3px', padding: '0' }} />
               </td>
             </tr>
           ))}
@@ -129,4 +189,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default AddressBook;

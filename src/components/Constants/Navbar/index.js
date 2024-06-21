@@ -56,7 +56,7 @@ const NavbarMain = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink className="nav-link" onClick={closeNavvy} to="/Contacts">
+            <NavLink className="nav-link" onClick={closeNavvy} to="/AddressBooks">
               Contacts
             </NavLink>
           </li>
