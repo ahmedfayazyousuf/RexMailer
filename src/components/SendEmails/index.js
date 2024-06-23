@@ -63,12 +63,14 @@ const SendEmails = () => {
   };
 
   const handleSendEmails = async () => {
+    document.getElementById("sendEmailsButton").innerHTML = "Loading...";
     if (!selectedTemplate || selectedAddressBooks.length === 0) {
       document.getElementById('ErrorText').style.color = 'red';
       document.getElementById('ErrorText').innerHTML = "Please select a template and at least one address book.";
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
       }, 4000);
+      document.getElementById("sendEmailsButton").innerHTML = "Send Emails";
       return;
     }
   
@@ -113,13 +115,15 @@ const SendEmails = () => {
         setTimeout(() => {
           document.getElementById('ErrorText').innerHTML = "";
         }, 4000);
+        document.getElementById("sendEmailsButton").innerHTML = "Send Emails";
       } else {
         console.error('Failed to send emails:', data);
         document.getElementById('ErrorText').style.color = 'red';
         document.getElementById('ErrorText').innerHTML = "Failed to send emails.";
-        setTimeout(() => {
+        setTimeout(() => {  
           document.getElementById('ErrorText').innerHTML = "";
         }, 4000);
+        document.getElementById("sendEmailsButton").innerHTML = "Send Emails";
       }
     } catch (error) {
       console.error('Error sending emails:', error);
@@ -128,6 +132,7 @@ const SendEmails = () => {
       setTimeout(() => {
         document.getElementById('ErrorText').innerHTML = "";
       }, 4000);
+      document.getElementById("sendEmailsButton").innerHTML = "Send Emails";
     }
   };
   
@@ -160,14 +165,17 @@ const SendEmails = () => {
                     <input type="radio" name="template" checked={template.id === selectedTemplate?.id} onChange={(e) => {e.stopPropagation(); handleSelectTemplate(template);}} />
                   </td>
                   <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{template.title}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{new Date(template.timestamp.toDate()).toLocaleString()}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                    {/* {new Date(template.timestamp.toDate()).toLocaleString()} */}
+                    {new Date(template.timestamp.seconds * 1000).toLocaleDateString()} at {new Date(template.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', hour12: true })}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <h3 style={{margin: '0', padding: '0', marginTop: '40px'}}>Step 2 - Choose Address Books</h3>
+        <h3 style={{margin: '0', padding: '0', marginTop: '40px'}}>Step 2 - Choose Address Book</h3>
         <div className='EmailTemplatesandContactsTable' style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', fontSize: '10px', gap: '10px', padding: '0', margin: '0', marginBottom: '-15px' }}>
           <button onClick={handleSelectAllAddressBooks} style={{ fontSize: '10px' }}>
             {selectedAddressBooks.length === addressBooks.length ? 'Deselect All' : 'Select All'}
@@ -190,15 +198,17 @@ const SendEmails = () => {
                     <input type="checkbox" checked={selectedAddressBooks.includes(addressBook.id)} onChange={(e) => handleCheckboxChange(e, addressBook.id)} />
                   </td>
                   <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{addressBook.name}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{addressBook.timestamp ? addressBook.timestamp.toLocaleString() : 'N/A'}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                    {new Date(addressBook.timestamp.seconds * 1000).toLocaleDateString()} at {new Date(addressBook.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', hour12: true })}
+                  </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> 
         </div>
         <div id='ErrorText' style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '10px 0px -10px 0px', padding: '0', height: '15px', fontSize: '12px', color: 'red'}}></div>
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <button className='ButtonSendEmails' onClick={handleSendEmails}>
+          <button id='sendEmailsButton' className='ButtonSendEmails' onClick={handleSendEmails}>
             Send Emails
           </button>
         </div>

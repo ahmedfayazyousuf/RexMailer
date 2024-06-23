@@ -7,11 +7,13 @@ import { FaPlus } from "react-icons/fa";
 import * as XLSX from 'xlsx';
 
 const AddressBook = () => {
+  const fileInputRef = useRef(null);
   const [contacts, setContacts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [excelFile, setExcelFile] = useState(null);
+  const [fileName, setFileName] = useState('');
   const modalRef = useRef(null);
   const db = getFirestore();
   const { id } = useParams();
@@ -33,6 +35,10 @@ const AddressBook = () => {
     };
     fetchContacts();
   }, [id, db]);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
 
   const handleAddContact = async () => {
     if (name && email) {
@@ -90,6 +96,7 @@ const AddressBook = () => {
     const file = event.target.files[0];
     if (file) {
       setExcelFile(file);
+      setFileName(file.name);
     }
   };
 
@@ -119,6 +126,7 @@ const AddressBook = () => {
       });
       setContacts(updatedContacts);
       setExcelFile(null);
+      setFileName('');
     };
     reader.readAsArrayBuffer(excelFile);
   };
@@ -134,10 +142,25 @@ const AddressBook = () => {
         <FaPlus style={{ padding: '0', margin: '0'}} />
       </button>
 
-      <div>
-        <p>Want to add bulk contacts? Upload an excel file with the first column with the contact names, and the second column with contact emails.</p>
-        <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} style={{ top: '100px', right: '50px', cursor: 'pointer', height: '50px', width: '500px' }} />
-        <button onClick={handleBulkUpload}>Upload Bulk Contacts</button>
+      <div style={{ display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '10px' }}>
+        <p style={{ textAlign: 'center', maxWidth: '440px', fontSize: '14px' }}>To add bulk contacts, upload an excel file with the first column with the contact names, and the second column with contact emails.</p>
+        <div>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={handleExcelUpload}
+            ref={fileInputRef}
+            style={{ display: 'none' }} // Hide the default file input
+          />
+          <button
+            onClick={handleButtonClick}
+            style={{ padding: '10px 20px', backgroundColor: '#FF3380', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', marginRight: '10px' }}
+          >
+            Choose File
+          </button>
+          <span>{fileName}</span>
+        </div>
+        <button onClick={handleBulkUpload} style={{ padding: '10px 20px', backgroundColor: '#46fa8b', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px' }}>Upload Bulk Contacts</button>
       </div>
 
       <table className="ContactsTable">
@@ -157,8 +180,8 @@ const AddressBook = () => {
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.name}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{contact.email}</td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                {contact.timestamp ? convertFirestoreTimestampToDate(contact.timestamp).toLocaleString() : 'N/A'}
-                </td>
+                {contact.timestamp ? convertFirestoreTimestampToDate(contact.timestamp).toLocaleString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', hour12: true }).replace(',', ' at') : 'N/A'}
+              </td>
               <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '50px' }}>
                 <FaTrashCan onClick={() => handleDeleteContact(index)} style={{ color: 'red', cursor: 'pointer', fontSize: '15px', marginBottom: '-3px', padding: '0' }} />
               </td>
