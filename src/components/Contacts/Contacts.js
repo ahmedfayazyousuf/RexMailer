@@ -1,3 +1,5 @@
+import Illustration1 from '../1_MediaAssets/Home/Illustration1.png';
+import Illustration2 from '../1_MediaAssets/Home/Illustration2.png';
 import { FaTrashCan } from "react-icons/fa6";
 // import { HiMiniArrowLongRight } from "react-icons/hi2";
 import React, { useState, useEffect } from 'react';
@@ -83,6 +85,10 @@ const AddressBooks = () => {
 
   return (
     <div className='MainDiv' style={{ paddingTop: '70px', minHeight: '100vh', justifyContent: 'flex-start', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      
+      <img className="DPhider HoverFloat" src={Illustration1} alt="lalaland" style={{position: 'absolute', bottom: '0', right: '0', width: '250px'}}/>
+      <img className="DPhider HoverFloat" src={Illustration2} alt="lalaland" style={{position: 'absolute', top: '50px', left: '0', width: '230px'}}/>
+
       <h2 style={{ textAlign: 'center', margin: '0', marginBottom: '20px' }}>
         <span>Manage </span><span style={{ color: '#FF3380', fontWeight: '900' }}>Address Books</span>
       </h2>
