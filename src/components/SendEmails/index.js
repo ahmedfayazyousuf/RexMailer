@@ -138,7 +138,7 @@ const SendEmails = () => {
   
 
   return (
-    <div className='MainDiv' style={{ padding: '70px 0px 70px 0px', height: '100%', justifyContent: 'flex-start' }}>
+    <div className='MainDiv' style={{ padding: '70px 0px', minHeight: '100vh', justifyContent: 'flex-start' }}>
       <h2 style={{ textAlign: 'center', margin: '0' }}>
         <span>Send </span>
         <span style={{ color: '#FF3380', fontWeight: '900' }}>Emails</span>

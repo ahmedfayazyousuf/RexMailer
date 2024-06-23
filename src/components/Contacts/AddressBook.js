@@ -98,41 +98,77 @@ const AddressBook = () => {
       setExcelFile(file);
       setFileName(file.name);
     }
+    // Reset the input value
+    event.target.value = null;
   };
+  
 
   const handleBulkUpload = async () => {
+    document.getElementById("uploadBulkButton").innerHTML = "Loading...";
     if (!excelFile) {
       console.error('No file uploaded');
+      document.getElementById("uploadBulkButton").innerHTML = "Upload Bulk Contacts";
+      document.getElementById("MessageBulk").innerHTML = "No file uploaded!";
+      setTimeout(() => {
+        document.getElementById('MessageBulk').innerHTML = "";
+      }, 4000);
       return;
     }
-
+  
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-      const newContacts = json.slice(1).map(row => ({
-        name: row[0],
-        email: row[1],
-        timestamp: new Date()
-      }));
-
-      const updatedContacts = [...contacts, ...newContacts];
-      await updateDoc(doc(db, 'Contacts', id), {
-        contacts: updatedContacts
-      });
-      setContacts(updatedContacts);
-      setExcelFile(null);
-      setFileName('');
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  
+        console.log('Excel data:', json); // Log the data for debugging
+  
+        // Filter out empty rows
+        const filteredData = json.slice(1).filter(row => row.length === 2 && row[0] && row[1]);
+  
+        console.log('Filtered data:', filteredData); // Log the filtered data
+  
+        const newContacts = filteredData.map(row => ({
+          name: row[0],
+          email: row[1],
+          timestamp: new Date()
+        }));
+  
+        console.log('Parsed contacts:', newContacts); // Log the parsed contacts
+  
+        // Check for undefined fields
+        const invalidContacts = newContacts.filter(contact => !contact.name || !contact.email || !contact.timestamp);
+        if (invalidContacts.length > 0) {
+          console.error('Invalid contacts found:', invalidContacts);
+          return;
+        }
+  
+        const updatedContacts = [...contacts, ...newContacts];
+        console.log('Updated contacts:', updatedContacts); // Log the updated contacts
+  
+        await updateDoc(doc(db, 'Contacts', id), {
+          contacts: updatedContacts
+        });
+  
+        setContacts(updatedContacts);
+        setExcelFile(null);
+        setFileName('');
+        document.getElementById("MessageBulk").innerHTML = "";
+        document.getElementById("uploadBulkButton").innerHTML = "Upload Bulk Contacts";
+      } catch (error) {
+        console.error('Error processing file:', error);
+      }
     };
     reader.readAsArrayBuffer(excelFile);
   };
+  
+  
 
   return (
-    <div className='MainDiv' style={{ paddingTop: '70px', height: 'calc(100vh - 70px)', justifyContent: 'flex-start' }}>
+    <div className='MainDiv' style={{ padding: '70px 0px', minHeight: '100vh', justifyContent: 'flex-start' }}>
       <h2 style={{ textAlign: 'center', margin: '0' }}>
         <span>Manage </span>
         <span style={{ color: '#FF3380', fontWeight: '900' }}>Contacts</span>
@@ -143,27 +179,21 @@ const AddressBook = () => {
       </button>
 
       <div style={{ display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '10px' }}>
-        <p style={{ textAlign: 'center', maxWidth: '440px', fontSize: '14px' }}>To add bulk contacts, upload an excel file with the first column with the contact names, and the second column with contact emails.</p>
-        <div>
-          <input
-            type="file"
-            accept=".xlsx, .xls"
-            onChange={handleExcelUpload}
-            ref={fileInputRef}
-            style={{ display: 'none' }} // Hide the default file input
-          />
-          <button
-            onClick={handleButtonClick}
-            style={{ padding: '10px 20px', backgroundColor: '#FF3380', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', marginRight: '10px' }}
-          >
+        <p style={{ textAlign: 'center', maxWidth: '440px', fontSize: '14px' }}>To add bulk contacts, upload an excel file (.xlsx) with the first column containing contact names, and the second column their email addresses.</p>
+        
+        <div style={{display: 'flex', padding: '0', margin: '0', justifyContent: 'center', alignItems: 'center', textAlign: 'center', marginTop: '-10px'}}>
+          <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} ref={fileInputRef} style={{ display: 'none' }} />
+          <button onClick={handleButtonClick} style={{ padding: '5px 10px', backgroundColor: '#FF3380', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', marginRight: '10px' }} >
             Choose File
           </button>
-          <span>{fileName}</span>
+          <span style={{fontSize: '12px'}}>{fileName}</span>
         </div>
-        <button onClick={handleBulkUpload} style={{ padding: '10px 20px', backgroundColor: '#46fa8b', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px' }}>Upload Bulk Contacts</button>
+
+        <button id='uploadBulkButton' onClick={handleBulkUpload} style={{ padding: '10px 20px', backgroundColor: '#46fa8b', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', margin: '0'}}>Upload Bulk Contacts</button>
+        <div id='MessageBulk' style={{color: 'red', display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', height: '20px', fontSize: '12px', marginTop: '-7px', padding: '0', width: '100%'}}></div>
       </div>
 
-      <table className="ContactsTable">
+      <table className="ContactsTable" style={{marginTop: '3px'}}>
         <thead>
           <tr style={{ background: '#46fa8b', color: 'black', fontWeight: '900', textAlign: 'center', borderRadius: '15px' }}>
             <th style={{ padding: '8px', width: '50px', borderRadius: '15px 0px 0px 0px' }}>S#</th>
